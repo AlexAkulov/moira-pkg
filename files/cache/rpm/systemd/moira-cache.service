@@ -1,0 +1,19 @@
+[Unit]
+Description=moira-cache - metric stream filtering and caching for Moira
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=/usr/sbin/moira-cache --config=/etc/moira/config.yml
+User=moira
+Group=moira
+PIDFile=/var/run/moira-cache.pid
+PermissionsStartOnly=true
+ExecStartPre=-/usr/bin/touch /var/run/moira-cache.pid
+ExecStartPre=/usr/bin/chown -R moira:moira /var/run/moira-cache.pid
+Restart=on-failure
+ExecReload=/bin/kill -USR2 $MAINPID
+TimeoutStopSec=30s
+
+[Install]
+WantedBy=multi-user.target
